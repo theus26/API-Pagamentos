@@ -1,4 +1,5 @@
-﻿using API_Produtos.DTO;
+﻿using API_Produtos.DAL.Entities;
+using API_Produtos.DTO;
 using API_Produtos.Manager.Interfaces;
 using API_Produtos.Repository.Interfaces;
 using System.Text.RegularExpressions;
@@ -12,6 +13,24 @@ namespace API_Produtos.Manager
         {
             _repository = repository;
         }
+        /// <summary>
+        /// Método criado para devolver todos os produtos
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public List<Produto> GetAll()
+        {
+            try
+            {
+                var getProducts = _repository.GetAllProducts();
+                return getProducts;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Iremos validar as informações repassadas pelo controller, caso esteja tudo certo irá chamar o repository para persistir os dados no BD.
         /// </summary>

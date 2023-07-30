@@ -18,6 +18,7 @@ namespace API_Produtos.Repository
             _produto = produto;
             _vendas = vendas;
         }
+        #region Cadastrar Produtos
         /// <summary>
         /// Metodo responsavél por criar um produto no banco de dados
         /// instancia a classe para ela receber seus valores e salva-los no banco de dados
@@ -45,5 +46,32 @@ namespace API_Produtos.Repository
                 throw;
             }
         }
+        #endregion
+
+        #region Listar Produtos
+        /// <summary>
+        /// Metodo criado para consultar o banco de dados e retornar todos os produtos existente em forma de lista
+        /// caso a busca seja nula, ele devolve uma exeção
+        /// </summary>
+        /// <returns></returns>
+        public List<Produto> GetAllProducts()
+        {
+            try
+            {
+                var getAll = _produto.GetAll().ToList();
+
+                if (getAll != null)
+                {
+                    return getAll;
+                }
+
+                throw new Exception("Não foi possivel trazer os dados");
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        #endregion
     }
 }

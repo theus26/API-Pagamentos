@@ -47,6 +47,25 @@ namespace API_Produtos.Controllers
             }
 
         }
+        [HttpGet]
+        public IActionResult GetAllProducts()
+        {
+            try
+            {
+                var getProducts = _manager.GetAll();
+                return Ok(getProducts);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponseDTO()
+                {
+                    status = StatusCodes.Status400BadRequest,
+                    message = "Ocorreu um erro desconhecido",
+                    info = ex.Message
+
+                });
+            }
+        }
         
     }
 }
