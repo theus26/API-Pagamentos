@@ -7,5 +7,6 @@ namespace API_Produtos.Manager.Interfaces
     {
         bool Validate(ProdutosDTO produtos);
         List<ProdutosDTO> GetAll();
+        Produto GetProductId(long id);
     }
 }

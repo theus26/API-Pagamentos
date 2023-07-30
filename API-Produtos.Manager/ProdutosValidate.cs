@@ -30,6 +30,30 @@ namespace API_Produtos.Manager
                 throw;
             }
         }
+        /// <summary>
+        /// Chama o repository para realizar a chamada no banco de dados caso exista retorna o produto expecificado
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Produto GetProductId(long id)
+        {
+            try
+            {
+                // Validar se o ID é um número inteiro positivo
+                if (id <= 0)
+                {
+                    throw new ArgumentException("O ID do produto deve ser um número inteiro positivo.");
+                }
+                var getProductId = _repository.GetProduto(id);
+
+                return getProductId;
+
+            }
+            catch
+            {
+                throw;
+            }
+        }
 
         /// <summary>
         /// Iremos validar as informações repassadas pelo controller, caso esteja tudo certo irá chamar o repository para persistir os dados no BD.

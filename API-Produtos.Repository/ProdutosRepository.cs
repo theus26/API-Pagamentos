@@ -85,5 +85,34 @@ namespace API_Produtos.Repository
             }
         }
         #endregion
+
+        #region Pegar produto pelo seu id
+        /// <summary>
+        /// Verificar se o produto existe no banco de dados apartir do id informado, caso não haja ele lança uma exceção
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Produto GetProduto(long id)
+        {
+            try
+            {
+                // Verificar se o produto existe no banco de dados
+                var getProduct = _produto.GetAll().FirstOrDefault(x => x.IdProduto == id);
+
+                if (getProduct != null)
+                {
+                    return getProduct;
+                }
+
+                throw new ArgumentException($"Não foi possivel encontrar produto com esse id: {id}");
+            }
+            catch
+            {
+                throw;
+            }
+
+        }
+        #endregion
+
     }
 }

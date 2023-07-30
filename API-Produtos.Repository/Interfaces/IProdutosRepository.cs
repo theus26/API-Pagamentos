@@ -7,5 +7,6 @@ namespace API_Produtos.Repository.Interfaces
     {
         bool CreateProducts(string name, float valor_unitario, int qtde_estoque);
         List<ProdutosDTO> GetAllProducts();
+        Produto GetProduto(long id);
     }
 }

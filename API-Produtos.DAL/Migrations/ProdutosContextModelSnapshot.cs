@@ -43,7 +43,7 @@ namespace API_Produtos.DAL.Migrations
 
                     b.HasKey("IdProduto");
 
-                    b.ToTable("produto");
+                    b.ToTable("produto", (string)null);
                 });
 #pragma warning restore 612, 618
         }

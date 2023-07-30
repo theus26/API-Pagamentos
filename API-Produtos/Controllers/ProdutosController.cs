@@ -66,6 +66,25 @@ namespace API_Produtos.Controllers
                 });
             }
         }
+        [HttpGet("{IdProduto}")]
+        public IActionResult GetProductId(long IdProduto)
+        {
+            try
+            {
+                var getProduct = _manager.GetProductId(IdProduto);
+                return Ok(getProduct);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponseDTO()
+                {
+                    status = StatusCodes.Status400BadRequest,
+                    message = "Ocorreu um erro desconhecido",
+                    info = ex.Message
+
+                });
+            }
+        }
         
     }
 }
