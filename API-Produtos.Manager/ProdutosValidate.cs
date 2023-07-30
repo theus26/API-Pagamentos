@@ -18,7 +18,7 @@ namespace API_Produtos.Manager
         /// </summary>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public List<Produto> GetAll()
+        public List<ProdutosDTO> GetAll()
         {
             try
             {

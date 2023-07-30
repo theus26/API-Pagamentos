@@ -16,7 +16,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //Injen��o de Dependencia
 builder.Services.AddScoped<IDAO<Produto>, BaseDAO<Produto>>();
-builder.Services.AddScoped<IDAO<Vendas>, BaseDAO<Vendas>>();
 builder.Services.AddScoped<IProdutosValidate, ProdutosValidate>();
 builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();
 

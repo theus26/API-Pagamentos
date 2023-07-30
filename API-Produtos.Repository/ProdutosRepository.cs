@@ -1,5 +1,6 @@
 ﻿using API_Produtos.DAL.DAO;
 using API_Produtos.DAL.Entities;
+using API_Produtos.DTO;
 using API_Produtos.Repository.Interfaces;
 
 namespace API_Produtos.Repository
@@ -7,16 +8,14 @@ namespace API_Produtos.Repository
     public class ProdutosRepository : IProdutosRepository
     {
         private readonly IDAO<Produto> _produto;
-        private readonly IDAO<Vendas> _vendas;
+       
         /// <summary>
         /// Criado injeção de dependencia para poder ter acesso as entidades no Banco de dados e poder gerencia e persistir os dados
         /// </summary>
         /// <param name="produto"></param>
-        /// <param name="vendas"></param>
-        public ProdutosRepository(IDAO<Produto> produto, IDAO<Vendas> vendas)
+        public ProdutosRepository(IDAO<Produto> produto)
         {
             _produto = produto;
-            _vendas = vendas;
         }
         #region Cadastrar Produtos
         /// <summary>
@@ -54,7 +53,7 @@ namespace API_Produtos.Repository
         /// caso a busca seja nula, ele devolve uma exeção
         /// </summary>
         /// <returns></returns>
-        public List<Produto> GetAllProducts()
+        public List<ProdutosDTO> GetAllProducts()
         {
             try
             {
@@ -62,7 +61,19 @@ namespace API_Produtos.Repository
 
                 if (getAll != null)
                 {
-                    return getAll;
+                    foreach (var item in getAll)
+                    {
+                        var newObj = new List<ProdutosDTO>()
+                        {
+                            new ProdutosDTO()
+                            {
+                                nome = item.nome,
+                                qtde_estoque = item.qtde_estoque,
+                                valor_unitario = item.valor_unitario,
+                            }
+                        };
+                    }
+
                 }
 
                 throw new Exception("Não foi possivel trazer os dados");

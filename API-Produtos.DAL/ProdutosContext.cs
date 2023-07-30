@@ -6,7 +6,6 @@ namespace API_Produtos.DAL
     public class ProdutosContext : DbContext
     {
         public DbSet<Produto> produto { get; set; }
-        public DbSet<Vendas> vendas { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
