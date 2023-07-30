@@ -57,23 +57,24 @@ namespace API_Produtos.Repository
         {
             try
             {
+                List<ProdutosDTO> produtosDTOs = new List<ProdutosDTO>();
                 var getAll = _produto.GetAll().ToList();
 
                 if (getAll != null)
                 {
                     foreach (var item in getAll)
                     {
-                        var newObj = new List<ProdutosDTO>()
+                        var newObj = new ProdutosDTO()
                         {
-                            new ProdutosDTO()
-                            {
-                                nome = item.nome,
-                                qtde_estoque = item.qtde_estoque,
-                                valor_unitario = item.valor_unitario,
-                            }
+                            Id = item.IdProduto,
+                            nome = item.nome,
+                            qtde_estoque = item.qtde_estoque,
+                            valor_unitario = item.valor_unitario,
                         };
+                        
+                        produtosDTOs.Add(newObj);
                     }
-
+                      return produtosDTOs;
                 }
 
                 throw new Exception("Não foi possivel trazer os dados");
