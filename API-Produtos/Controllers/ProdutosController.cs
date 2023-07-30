@@ -85,6 +85,26 @@ namespace API_Produtos.Controllers
                 });
             }
         }
-        
+
+        [HttpDelete("{ProdutoId}")]
+        public IActionResult DeleteProduct(long ProdutoId)
+        {
+            try
+            {
+                _manager.DeleteProduct(ProdutoId);
+                return Ok("Produto excluído com sucesso");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResponseDTO()
+                {
+                    status = StatusCodes.Status400BadRequest,
+                    message = "Ocorreu um erro desconhecido",
+                    info = ex.Message
+
+                });
+            }
+        }
+
     }
 }

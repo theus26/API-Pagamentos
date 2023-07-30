@@ -18,18 +18,6 @@ namespace API_Produtos.DAL.DAO
             return obj;
         }
 
-        public void Delete(T obj)
-        {
-            using (_ProdutosContext = new ProdutosContext())
-            {
-                if (obj != null)
-                {
-                    _ProdutosContext.Remove(obj);
-                    _ProdutosContext.SaveChanges();
-                }
-            }
-        }
-
         public void Delete(long id)
         {
             using (_ProdutosContext = new ProdutosContext())

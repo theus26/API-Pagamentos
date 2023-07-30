@@ -46,6 +46,23 @@ namespace API_Produtos.Repository
             }
         }
         #endregion
+        /// <summary>
+        /// Metodo criado deletar um produto do banco, caso encontrec o produto com o id especifico
+        /// </summary>
+        /// <param name="id"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public string DeleteProduct(long id)
+        {
+            // Verificar se o produto existe no banco de dados
+            var getProduct = _produto.GetAll().FirstOrDefault(x => x.IdProduto == id);
+            if (getProduct != null)
+            {
+                _produto.Delete(id);
+                return $"Produto {id}, deletado com sucesso!";
+            }
+            throw new OperationCanceledException($"Não foi possível encontrar nenhum com o ID fornecido {id}");
+
+        }
 
         #region Listar Produtos
         /// <summary>

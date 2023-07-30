@@ -13,6 +13,25 @@ namespace API_Produtos.Manager
         {
             _repository = repository;
         }
+
+        public string DeleteProduct(long id)
+        {
+            try
+            {
+                // Validar se o ID é um número inteiro positivo
+                if (id <= 0)
+                {
+                    throw new ArgumentException("O ID do produto deve ser um número inteiro positivo.");
+                }
+                 _repository.DeleteProduct(id);
+                return $"Produto {id}, deletado com sucesso!";
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Método criado para devolver todos os produtos
         /// </summary>

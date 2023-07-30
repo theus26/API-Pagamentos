@@ -10,7 +10,6 @@ namespace API_Produtos.DAL.DAO
     {
         T Create(T obj);
         T Update(T obj);
-        void Delete(T obj);
         void Delete(long id);
         T Get(long id);
         IEnumerable<T> GetAll();

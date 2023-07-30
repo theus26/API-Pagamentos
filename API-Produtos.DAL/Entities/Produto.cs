@@ -6,7 +6,7 @@ namespace API_Produtos.DAL.Entities
     {
        
         [Key]
-        public int IdProduto { get; set; }
+        public long IdProduto { get; set; }
         [Required]
         public string nome { get; set; }
         [Required]
