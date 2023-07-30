@@ -19,4 +19,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\API-Produtos.DTO\API-Produtos.DTO.csproj" />
+    <ProjectReference Include="..\API-Produtos.Manager\API-Produtos.Manager.csproj" />
+    <ProjectReference Include="..\API-Produtos.Utils\API-Produtos.Utils.csproj" />
+  </ItemGroup>
+
 </Project>
