@@ -106,5 +106,31 @@ namespace API_Produtos.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult PurchaseProduct(PurchaseProductsDTO purchaseProducts)
+        {
+            try
+            {
+                var purchase = _manager.PurchaseProduct(purchaseProducts);
+
+                if (purchase == true)
+                {
+                    return Ok("Venda realizada com sucesso");
+                }
+
+                return BadRequest("Ocorreu um erro desconhecido");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status412PreconditionFailed, new ErrorResponseDTO()
+                {
+                    status = StatusCodes.Status412PreconditionFailed,
+                    message = "Os valores informados não são válidos",
+                    info = ex.Message
+
+                });
+            }
+        }
+
     }
 }

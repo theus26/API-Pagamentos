@@ -9,5 +9,6 @@ namespace API_Produtos.Manager.Interfaces
         List<ProdutosDTO> GetAll();
         Produto GetProductId(long id);
         string DeleteProduct(long id);
+        bool PurchaseProduct(PurchaseProductsDTO productsDTO);
     }
 }

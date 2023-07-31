@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\API-Produtos.DAL\API-Produtos.DAL.csproj" />
     <ProjectReference Include="..\API-Produtos.DTO\API-Produtos.DTO.csproj" />
+    <ProjectReference Include="..\API-Produtos.Utils\API-Produtos.Utils.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,20 +2,23 @@
 using API_Produtos.DAL.Entities;
 using API_Produtos.DTO;
 using API_Produtos.Repository.Interfaces;
+using API_Produtos.Utils.Requests.Interface;
 
 namespace API_Produtos.Repository
 {
     public class ProdutosRepository : IProdutosRepository
     {
         private readonly IDAO<Produto> _produto;
+        private readonly IRequestPayament _util;
        
         /// <summary>
         /// Criado injeção de dependencia para poder ter acesso as entidades no Banco de dados e poder gerencia e persistir os dados
         /// </summary>
         /// <param name="produto"></param>
-        public ProdutosRepository(IDAO<Produto> produto)
+        public ProdutosRepository(IDAO<Produto> produto, IRequestPayament request )
         {
             _produto = produto;
+            _util = request;
         }
         #region Cadastrar Produtos
         /// <summary>
@@ -130,6 +133,71 @@ namespace API_Produtos.Repository
 
         }
         #endregion
+        /// <summary>
+        /// Metodo criado para realizar a compra e o pagamento, ao receber os dados iremos verificar se o produto está disponivel, verificar a 
+        /// quantidade do estoque, ter o valor final do produto comprado e por fim realizar a chamada da api.
+        /// </summary>
+        /// <param name="ProdutoId"></param>
+        /// <param name="qtde_comprada"></param>
+        /// <param name="titular"></param>
+        /// <param name="numero"></param>
+        /// <param name="dataExp"></param>
+        /// <param name="bandeira"></param>
+        /// <param name="cvv"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool PurchaseProduct(long ProdutoId, int qtde_comprada, string titular, string numero, string dataExp, string bandeira, string cvv)
+        {
+            try
+            {
+                var getProduct = _produto.GetAll().FirstOrDefault(x => x.IdProduto == ProdutoId);
+                if (getProduct == null) throw new ArgumentException($"Produto em falta");
+
+                if(getProduct.qtde_estoque == 0) throw new ArgumentException($"Produto Indisponivel");
+
+                if (getProduct.qtde_estoque < qtde_comprada) throw new ArgumentException($"Quantidade de estoque indisponivel");
+
+                float ValorTotal = getProduct.valor_unitario * qtde_comprada;
+
+                //Intanciar Obj para fazer request
+                InfoPayamentDTO infoPayament = new InfoPayamentDTO()
+                {
+                    valor = ValorTotal,
+                    cartao = new Card()
+                    {
+                        bandeira = bandeira,
+                        cvv = cvv,
+                        data_expiracao = dataExp,
+                        numero = numero,
+                        titular = titular,
+
+                    }
+                };
+                //Chamar a Request
+                var request = _util.GetStateRequest(infoPayament).Result;
+
+                if (request.Estado == "APROVADO")
+                {
+                    //Atualizar os dados do banco, adicionar data da venda e valor final
+                    getProduct.DataUltimaVenda = DateTime.Now;
+                    getProduct.ValorUltimaVenda = ((int)ValorTotal);
+                    getProduct.qtde_estoque = getProduct.qtde_estoque - qtde_comprada;
+                    _produto.Update(getProduct);
+                    return true;
+
+                }
+                return false;
+
+                
+            }
+            catch
+            {
+                throw;
+            }
+
+
+
+        }
 
     }
 }
