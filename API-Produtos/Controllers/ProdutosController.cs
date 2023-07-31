@@ -36,7 +36,7 @@ namespace API_Produtos.Controllers
         /// <param name="produtos"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Produtos(ProdutosDTO produtos)
+        public IActionResult Products(ProdutosDTO produtos)
         {
             try
             {
