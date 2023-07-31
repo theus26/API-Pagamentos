@@ -9,6 +9,10 @@ namespace API_Produtos.Utils.Requests
 {
     public class RequestPayament : IRequestPayament
     {
+        /// <summary>
+        /// Adicionando injeção de dependencia para poder usar os recursos do IHttpClientFactory, responsavel por realizar a request para a API de Pagamentos
+        /// e IConfiguration para poder recuperar a url do appSettings
+        /// </summary>
         private readonly IConfiguration _configuration;
         private readonly IHttpClientFactory _httpClientFactory;
         public RequestPayament(IConfiguration configuration, IHttpClientFactory httpClientFactory)
@@ -17,6 +21,11 @@ namespace API_Produtos.Utils.Requests
             _httpClientFactory = httpClientFactory;
         }
 
+        /// <summary>
+        /// Metodo responsavel por realizar a chamada a API de pagamentos enviar as informações de pagamento para processar o pedido.
+        /// <param name="infoPayament"></param>
+        /// <returns></returns>
+        /// <exception cref="HttpRequestException"></exception>
         public async Task<ResponseRequestDTO> GetStateRequest(InfoPayamentDTO infoPayament)
         {
             var url = _configuration.GetSection("Urls").GetSection("ApiPayament").Value;
@@ -37,7 +46,7 @@ namespace API_Produtos.Utils.Requests
 
                 var status = response.IsSuccessStatusCode; // Verifica se a requisição foi bem-sucedida
 
-                if (status == true)
+                if (status)
                 {
                     var content = await response.Content.ReadAsStringAsync();
 

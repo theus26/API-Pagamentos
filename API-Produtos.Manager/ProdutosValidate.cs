@@ -8,17 +8,25 @@ namespace API_Produtos.Manager
 {
     public class ProdutosValidate : IProdutosValidate
     {
+        /// <summary>
+        /// Adicionando injeção de dependencia para que o Manager tem acesso aos metodos do repository.
+        /// </summary>
         private readonly IProdutosRepository _repository;
         public ProdutosValidate(IProdutosRepository repository)
         {
             _repository = repository;
         }
 
+        /// <summary>
+        /// Metodo responsavel por deletar o produto, esse metodo recebe o Id, valida para verificar se é um positivo inteiro, caso seja
+        /// ele chamar o repository.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string DeleteProduct(long id)
         {
             try
             {
-                // Validar se o ID é um número inteiro positivo
                 if (id <= 0)
                 {
                     throw new ArgumentException("O ID do produto deve ser um número inteiro positivo.");
@@ -49,8 +57,10 @@ namespace API_Produtos.Manager
                 throw;
             }
         }
+
         /// <summary>
-        /// Chama o repository para realizar a chamada no banco de dados caso exista retorna o produto expecificado
+        /// Chama o repository para detalhar um produto pelo Id especificado, e valida para verificar se o Id é um inteiro positivo, caso não seja
+        /// lança uma exeção.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -58,7 +68,6 @@ namespace API_Produtos.Manager
         {
             try
             {
-                // Validar se o ID é um número inteiro positivo
                 if (id <= 0)
                 {
                     throw new ArgumentException("O ID do produto deve ser um número inteiro positivo.");
@@ -66,8 +75,8 @@ namespace API_Produtos.Manager
                 var getProductId = _repository.GetProduto(id);
 
                 return getProductId;
-
             }
+
             catch
             {
                 throw;
@@ -85,11 +94,11 @@ namespace API_Produtos.Manager
             {
                 //Validação para ver se os campos são nulos ou vazios.
                 if(productsDTO.produto_id  <= 0 || productsDTO.qtde_comprada <= 0) throw new ArgumentException("Valores informados invalidos.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.titular)) throw new ArgumentException("Campos para realizar a compra não podem ser nulos ou vazios.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.bandeira)) throw new ArgumentException("Campos para realizar a compra não podem ser nulos ou vazios.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.data_expiracao)) throw new ArgumentException("Campos para realizar a compra não podem ser nulos ou vazios.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.numero)) throw new ArgumentException("Campos para realizar a compra não podem ser nulos ou vazios.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.cvv)) throw new ArgumentException("Campos para realizar a compra não podem ser nulos ou vazios.");
+                if (string.IsNullOrEmpty(productsDTO.cartao.titular)) throw new ArgumentException("O campo Cartão não pode ser nulo ou vazio.");
+                if (string.IsNullOrEmpty(productsDTO.cartao.bandeira)) throw new ArgumentException("O campo Bandeira não pode ser nulo ou vazio.");
+                if (string.IsNullOrEmpty(productsDTO.cartao.data_expiracao)) throw new ArgumentException("O campo Data de expiração não podem ser nulo ou vazio.");
+                if (string.IsNullOrEmpty(productsDTO.cartao.numero)) throw new ArgumentException("O campos Numero não pode ser nulo ou vazio.");
+                if (string.IsNullOrEmpty(productsDTO.cartao.cvv)) throw new ArgumentException("O campos CVV não pode ser nulo ou vazio.");
 
                 //Validação para o tamanho de cada campo
                 if (productsDTO.cartao.bandeira.Length < 3) throw new ArgumentException("O campo Bandeira deve possuir mais de 3 caracteres.");
@@ -109,19 +118,19 @@ namespace API_Produtos.Manager
                 if (Matches.Count == 0) throw new ArgumentException("Cartão Inválido");
 
                 //Data de expiração
-                var ParserDate = new Regex(@"^(0[1-9]|1[0-2])\/\d{2}$");
+                var ParserDate = new Regex(@"^(0[1-9]|1[0-2])\/\d{4}$");
                 var MatchesDate = ParserDate.Matches(productsDTO.cartao.data_expiracao);
                 if (MatchesDate.Count == 0) throw new ArgumentException("Data de Expiração Inválida");
 
                 //Nome do titular
                 var ParserName = new Regex(@"[a-zA-Z]+");
                 var MatchesName = ParserName.Matches(productsDTO.cartao.titular);
-                if (MatchesName.Count == 0) throw new ArgumentException("Nome do Titular Inválido");
+                if (MatchesName.Count == 0) throw new ArgumentException("Nome do Titular Inválido, Por favor insira somente letras");
 
                 //Bandeira
                 var ParserBand = new Regex(@"[a-zA-Z]+");
                 var MatchesBand = ParserBand.Matches(productsDTO.cartao.bandeira);
-                if (MatchesBand.Count == 0) throw new ArgumentException("Bandeira do Cartão Inválida");
+                if (MatchesBand.Count == 0) throw new ArgumentException("Bandeira do Cartão Inválida, Por favor insira somente letras");
 
                 //Chamar o repository
                 var getRepository = _repository.PurchaseProduct(productsDTO.produto_id, productsDTO.qtde_comprada, productsDTO.cartao.titular, NumberCard, productsDTO.cartao.data_expiracao, productsDTO.cartao.bandeira, productsDTO.cartao.cvv);
@@ -158,14 +167,7 @@ namespace API_Produtos.Manager
                 //Chamar o repository para salvar os dados
                 var salved = _repository.CreateProducts(produtos.nome, produtos.valor_unitario, produtos.qtde_estoque);
 
-                if(salved == true)
-                {
-                    return true;
-                }
-
-                return false;
-
-
+                return salved;
             }
             catch
             {

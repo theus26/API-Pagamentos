@@ -20,7 +20,7 @@ namespace API_Produtos.Repository
             _produto = produto;
             _util = request;
         }
-        #region Cadastrar Produtos
+       
         /// <summary>
         /// Metodo responsavél por criar um produto no banco de dados
         /// instancia a classe para ela receber seus valores e salva-los no banco de dados
@@ -48,9 +48,9 @@ namespace API_Produtos.Repository
                 throw;
             }
         }
-        #endregion
+       
         /// <summary>
-        /// Metodo criado deletar um produto do banco, caso encontrec o produto com o id especifico
+        /// Metodo criado deletar um produto do banco, caso encontre o produto com o id especifico
         /// </summary>
         /// <param name="id"></param>
         /// <exception cref="NotImplementedException"></exception>
@@ -64,10 +64,9 @@ namespace API_Produtos.Repository
                 return $"Produto {id}, deletado com sucesso!";
             }
             throw new OperationCanceledException($"Não foi possível encontrar nenhum com o ID fornecido {id}");
-
         }
 
-        #region Listar Produtos
+       
         /// <summary>
         /// Metodo criado para consultar o banco de dados e retornar todos os produtos existente em forma de lista
         /// caso a busca seja nula, ele devolve uma exeção
@@ -104,11 +103,9 @@ namespace API_Produtos.Repository
                 throw;
             }
         }
-        #endregion
-
-        #region Pegar produto pelo seu id
+      
         /// <summary>
-        /// Verificar se o produto existe no banco de dados apartir do id informado, caso não haja ele lança uma exceção
+        /// Verificar se o produto existe no banco de dados apartir do id informado, caso não haja, ele lança uma exceção
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -130,12 +127,11 @@ namespace API_Produtos.Repository
             {
                 throw;
             }
-
         }
-        #endregion
+      
         /// <summary>
         /// Metodo criado para realizar a compra e o pagamento, ao receber os dados iremos verificar se o produto está disponivel, verificar a 
-        /// quantidade do estoque, ter o valor final do produto comprado e por fim realizar a chamada da api.
+        /// quantidade do estoque, ter o valor final do produto comprado, diminuir na quantidade de estoque e por fim realizar a chamada da api.
         /// </summary>
         /// <param name="ProdutoId"></param>
         /// <param name="qtde_comprada"></param>
@@ -173,31 +169,25 @@ namespace API_Produtos.Repository
 
                     }
                 };
+
                 //Chamar a Request
                 var request = _util.GetStateRequest(infoPayament).Result;
 
                 if (request.Estado == "APROVADO")
                 {
-                    //Atualizar os dados do banco, adicionar data da venda e valor final
+                    //Atualizar os dados do banco, adicionar data da venda, valor final e quantidade de estoque 
                     getProduct.DataUltimaVenda = DateTime.Now;
                     getProduct.ValorUltimaVenda = ((int)ValorTotal);
                     getProduct.qtde_estoque = getProduct.qtde_estoque - qtde_comprada;
                     _produto.Update(getProduct);
                     return true;
-
                 }
-                return false;
-
-                
+                return false;  
             }
             catch
             {
                 throw;
             }
-
-
-
         }
-
     }
 }
