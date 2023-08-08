@@ -1,7 +1,9 @@
 ﻿using API_Produtos.DAL.Entities;
 using API_Produtos.DTO;
 using API_Produtos.Manager.Interfaces;
+using API_Produtos.Manager.Validate;
 using API_Produtos.Repository.Interfaces;
+using FluentValidation.Results;
 using System.Text.RegularExpressions;
 
 namespace API_Produtos.Manager
@@ -92,48 +94,18 @@ namespace API_Produtos.Manager
         {
             try
             {
-                //Validação para ver se os campos são nulos ou vazios.
-                if(productsDTO.produto_id  <= 0 || productsDTO.qtde_comprada <= 0) throw new ArgumentException("Valores informados invalidos.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.titular)) throw new ArgumentException("O campo Cartão não pode ser nulo ou vazio.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.bandeira)) throw new ArgumentException("O campo Bandeira não pode ser nulo ou vazio.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.data_expiracao)) throw new ArgumentException("O campo Data de expiração não podem ser nulo ou vazio.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.numero)) throw new ArgumentException("O campos Numero não pode ser nulo ou vazio.");
-                if (string.IsNullOrEmpty(productsDTO.cartao.cvv)) throw new ArgumentException("O campos CVV não pode ser nulo ou vazio.");
+                var validator = new PurchaseValidate();
+                ValidationResult result = validator.Validate(productsDTO);
 
-                //Validação para o tamanho de cada campo
-                if (productsDTO.cartao.bandeira.Length < 3) throw new ArgumentException("O campo Bandeira deve possuir mais de 3 caracteres.");
-                if (productsDTO.cartao.cvv.Length < 3) throw new ArgumentException("O campo CVV deve possuir mais de 3 caracteres.");
-                if (productsDTO.cartao.data_expiracao.Length < 3) throw new ArgumentException("A Data de Expiração deve possuir mais de 3 caracteres.");
-                if (productsDTO.cartao.numero.Length < 3) throw new ArgumentException("O campo Numero deve possuir mais de 3 caracteres.");
-                if (productsDTO.cartao.titular.Length < 3) throw new ArgumentException("O campo Titular deve possuir mais de 3 caracteres.");
-
-                // Regex
-                
-                // Remover espaços em branco, caso existam
-                var NumberCard = Regex.Replace(productsDTO.cartao.numero, @"\s", "");
-
-                //Cartão
-                var parser = new Regex(@"^\d{16}$");
-                var Matches = parser.Matches(NumberCard);
-                if (Matches.Count == 0) throw new ArgumentException("Cartão Inválido");
-
-                //Data de expiração
-                var ParserDate = new Regex(@"^(0[1-9]|1[0-2])\/\d{4}$");
-                var MatchesDate = ParserDate.Matches(productsDTO.cartao.data_expiracao);
-                if (MatchesDate.Count == 0) throw new ArgumentException("Data de Expiração Inválida");
-
-                //Nome do titular
-                var ParserName = new Regex(@"[a-zA-Z]+");
-                var MatchesName = ParserName.Matches(productsDTO.cartao.titular);
-                if (MatchesName.Count == 0) throw new ArgumentException("Nome do Titular Inválido, Por favor insira somente letras");
-
-                //Bandeira
-                var ParserBand = new Regex(@"[a-zA-Z]+");
-                var MatchesBand = ParserBand.Matches(productsDTO.cartao.bandeira);
-                if (MatchesBand.Count == 0) throw new ArgumentException("Bandeira do Cartão Inválida, Por favor insira somente letras");
-
+                if (!result.IsValid)
+                {
+                    foreach (var failure in result.Errors)
+                    {
+                        throw new Exception($"Erro: {failure.ErrorMessage}");
+                    }
+                }
                 //Chamar o repository
-                var getRepository = _repository.PurchaseProduct(productsDTO.produto_id, productsDTO.qtde_comprada, productsDTO.cartao.titular, NumberCard, productsDTO.cartao.data_expiracao, productsDTO.cartao.bandeira, productsDTO.cartao.cvv);
+                var getRepository = _repository.PurchaseProduct(productsDTO.produto_id, productsDTO.qtde_comprada, productsDTO.cartao.titular, productsDTO.cartao.numero, productsDTO.cartao.data_expiracao, productsDTO.cartao.bandeira, productsDTO.cartao.cvv);
 
                 return getRepository;
             }
@@ -152,17 +124,16 @@ namespace API_Produtos.Manager
         {
             try
             {
-                //Validação para ver se os campos são nulos ou vazios.
-                if (string.IsNullOrEmpty(produtos.nome)) throw new ArgumentException("Produtos não podem ser nulos ou vazios.");
-                if(produtos.valor_unitario == 0) throw new ArgumentException("Produtos não podem ter valor unitario como 0.");
-
-                //Regex
-                var Parser = new Regex(@"[a-zA-Z]+");
-                var Matches = Parser.Matches(produtos.nome);
-                if (Matches.Count == 0) throw new ArgumentException("Por favor insira somente letras");
-
-                //Validação para o tamanho de cada campo
-                if (produtos.nome.Length < 3) throw new ArgumentException("Nome do produto deve possuir mais de 3 caracteres.");
+                
+                var validate = new ManageValidate();
+                ValidationResult result = validate.Validate(produtos);
+                if (!result.IsValid)
+                {
+                    foreach (var failure in result.Errors)
+                    {
+                        throw new Exception($"Propriedade: {failure.PropertyName}, Erro: {failure.ErrorMessage}");
+                    }
+                }
 
                 //Chamar o repository para salvar os dados
                 var salved = _repository.CreateProducts(produtos.nome, produtos.valor_unitario, produtos.qtde_estoque);
