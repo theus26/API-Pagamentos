@@ -3,6 +3,7 @@ using API_Produtos.DAL.Entities;
 using API_Produtos.DTO;
 using API_Produtos.Repository.Interfaces;
 using API_Produtos.Utils.Requests.Interface;
+using AutoMapper;
 
 namespace API_Produtos.Repository
 {
@@ -10,15 +11,18 @@ namespace API_Produtos.Repository
     {
         private readonly IDAO<Produto> _produto;
         private readonly IRequestPayament _util;
+        private IMapper _mapper;
+        
        
         /// <summary>
         /// Criado injeção de dependencia para poder ter acesso as entidades no Banco de dados e poder gerencia e persistir os dados
         /// </summary>
         /// <param name="produto"></param>
-        public ProdutosRepository(IDAO<Produto> produto, IRequestPayament request )
+        public ProdutosRepository(IDAO<Produto> produto, IRequestPayament request, IMapper mapper )
         {
             _produto = produto;
             _util = request;
+            _mapper = mapper;
         }
        
         /// <summary>
@@ -29,18 +33,14 @@ namespace API_Produtos.Repository
         /// <param name="valor_unitario"></param>
         /// <param name="qtde_estoque"></param>
         /// <returns></returns>
-        public bool CreateProducts(string name, float valor_unitario, int qtde_estoque)
+        public bool CreateProducts(ProdutosDTO produtos)
         {
             try
             {
-                 var newProduct = new Produto()
-                 {
-                     nome = name,
-                     qtde_estoque = qtde_estoque,
-                     valor_unitario = valor_unitario,
-                 };
+               
+                Produto create = _mapper.Map<Produto>(produtos);
 
-                 _produto.Create(newProduct);
+                 _produto.Create(create);
                  return true;
             }
             catch

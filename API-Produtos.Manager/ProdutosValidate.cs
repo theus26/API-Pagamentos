@@ -136,7 +136,7 @@ namespace API_Produtos.Manager
                 }
 
                 //Chamar o repository para salvar os dados
-                var salved = _repository.CreateProducts(produtos.nome, produtos.valor_unitario, produtos.qtde_estoque);
+                var salved = _repository.CreateProducts(produtos);
 
                 return salved;
             }
