@@ -5,7 +5,7 @@ namespace API_Produtos.Repository.Interfaces
 {
     public interface IProdutosRepository
     {
-        bool CreateProducts(string name, float valor_unitario, int qtde_estoque);
+        bool CreateProducts(ProdutosDTO produtos);
         List<ProdutosDTO> GetAllProducts();
         Produto GetProduto(long id);
         string DeleteProduct(long id);

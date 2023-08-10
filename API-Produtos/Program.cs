@@ -4,8 +4,10 @@ using API_Produtos.Manager;
 using API_Produtos.Manager.Interfaces;
 using API_Produtos.Repository;
 using API_Produtos.Repository.Interfaces;
+using API_Produtos.Utils.IMapper;
 using API_Produtos.Utils.Requests;
 using API_Produtos.Utils.Requests.Interface;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var OpenCors = "_openCors";
 
@@ -36,6 +39,7 @@ builder.Services.AddScoped<IDAO<Produto>, BaseDAO<Produto>>();
 builder.Services.AddScoped<IProdutosValidate, ProdutosValidate>();
 builder.Services.AddScoped<IRequestPayament, RequestPayament>();
 builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();
+builder.Services.AddAutoMapper(typeof(Mappers));
 builder.Services.AddHttpClient();
 var app = builder.Build();
 
